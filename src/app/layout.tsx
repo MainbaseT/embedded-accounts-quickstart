@@ -1,10 +1,10 @@
+import { config } from "@/config";
+import { cookieToInitialState } from "@account-kit/core";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "./providers";
-import { cookieToInitialState } from "@alchemy/aa-alchemy/config";
-import { headers } from "next/headers";
-import { config } from "@/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,12 +13,13 @@ export const metadata: Metadata = {
   description: "Embedded Accounts Quickstart Guide",
 };
 
-//#region root-layout
+// [!region root-layout]
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // hydrate the initial state on the client
   const initialState = cookieToInitialState(
     config,
     headers().get("cookie") ?? undefined,
@@ -32,4 +33,4 @@ export default function RootLayout({
     </html>
   );
 }
-//#endregion root-layout
+// [!endregion root-layout]

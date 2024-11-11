@@ -1,6 +1,17 @@
-import { getChain } from "@alchemy/aa-core";
+import { arbitrumSepolia } from "@account-kit/infra";
+import type { Chain } from "viem";
 
-//#region chains-route
+// TODO: add support for other chains
+const getChain = (id: number): Chain => {
+  switch (id) {
+    case arbitrumSepolia.id:
+      return arbitrumSepolia;
+    default:
+      throw new Error(`Chain not found: ${id}`);
+  }
+};
+
+// [!region chains-route]
 export async function POST(req: Request) {
   const id = req.url?.split("/").pop();
 
@@ -45,4 +56,4 @@ export async function POST(req: Request) {
     });
   }
 }
-//#endregion chains-route
+// [!endregion chains-route]

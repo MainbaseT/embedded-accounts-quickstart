@@ -1,36 +1,34 @@
 "use client";
 
-import React, { FormEvent } from "react";
+import { accountType, chain, accountClientOptions as opts } from "@/config";
 import {
   useAccount,
   useLogout,
   useSendUserOperation,
   useSmartAccountClient,
   useUser,
-} from "@alchemy/aa-alchemy/react";
-import {
-  chain,
-  accountType,
-  gasManagerConfig,
-  accountClientOptions as opts,
-} from "@/config";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+} from "@account-kit/react";
+import { FormEvent } from "react";
 import { Hex } from "viem";
 import { OpStatus } from "./op-status";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
 
 export const ProfileCard = () => {
   const user = useUser();
   const { address } = useAccount({ type: accountType });
   const { logout } = useLogout();
 
-  //#region sending-user-op
+  // [!region sending-user-op]
+  // use config values to initialize our smart account client
   const { client } = useSmartAccountClient({
     type: accountType,
-    gasManagerConfig,
     opts,
   });
+
+  // provide the useSendUserOperation with a client to send a UO
+  // this hook provides us with a status, error, and a result
   const {
     sendUserOperation,
     sendUserOperationResult,
@@ -40,15 +38,19 @@ export const ProfileCard = () => {
 
   const send = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
+    // collect all the form values from the user input
     const formData = new FormData(evt.currentTarget);
     const target = formData.get("to") as Hex;
     const data = formData.get("data") as Hex;
     const value = formData.get("value") as string;
+
+    // send the user operation
     sendUserOperation({
       uo: { target, data, value: value ? BigInt(value) : 0n },
     });
   };
-  //#endregion sending-user-op
+  // [!endregion sending-user-op]
 
   return (
     <Card>
